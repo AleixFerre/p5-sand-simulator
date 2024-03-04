@@ -3,10 +3,7 @@ class Sand extends Particle {
         super(x, y, Materials.Sand);
     }
 
-    /**
-     * Updates the particle.
-     * @returns {boolean} If the particle needs to be static
-    */
+
     override update(): boolean {
         if (super.update()) {
             return true;

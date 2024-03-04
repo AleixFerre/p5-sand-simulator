@@ -3,10 +3,6 @@ class Water extends Particle {
         super(x, y, Materials.Water);
     }
 
-    /**
-     * Updates the particle.
-     * @returns {boolean} If the particle needs to be static
-    */
     override update(): boolean {
         if (super.update()) {
             return true;

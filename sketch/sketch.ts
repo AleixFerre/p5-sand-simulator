@@ -2,10 +2,14 @@ let DYNAMIC_PARTICLES: Particle[] = [];
 const STATIC_PARTICLES: Materials[][] = [];
 const PARTICLES_AMOUNT = 200;
 
+const RESOLUTION = 5;
+const CANVAS_SIZE = 100;
+
 let img: p5.Image;
 let backgroundColor: p5.Color;
 
 let font: p5.Font;
+
 
 function preload() {
   font = loadFont('assets/Inconsolata-Medium.ttf');
@@ -13,19 +17,17 @@ function preload() {
 
 function setup() {
   console.log("🚀 - Setup initialized - P5 is running");
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  createCanvas(CANVAS_SIZE * RESOLUTION, CANVAS_SIZE * RESOLUTION, WEBGL);
 
   textFont(font);
   textSize(32);
   textAlign(LEFT, TOP);
 
+  frameRate(120);
+
   backgroundColor = color('black');
   img = createImage(width, height);
   initParticles();
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
@@ -37,18 +39,6 @@ function draw() {
 
   fill('white');
   text(floor(frameRate()), 5, 5);
-}
-
-function drawStaticParticles() {
-  for (let i = 0; i < img.width; i++) {
-    for (let j = 0; j < img.height; j++) {
-      if (STATIC_PARTICLES[i][j] === null) {
-        img.set(i, j, backgroundColor);
-      } else {
-        img.set(i, j, getMaterialColor(STATIC_PARTICLES[i][j]));
-      }
-    }
-  }
 }
 
 function updateParticles() {
@@ -86,19 +76,37 @@ function drawParticles() {
   image(img, 0, 0);
 }
 
-function initParticles() {
-  for (let i = PARTICLES_AMOUNT/2; i >= 0; i--) {
-    DYNAMIC_PARTICLES.push(
-      new Sand(floor(windowWidth / 2), i)
-    )
+function drawStaticParticles() {
+  for (let i = 0; i < img.width / RESOLUTION; i++) {
+    for (let j = 0; j < img.height / RESOLUTION; j++) {
+      if (STATIC_PARTICLES[i][j] === null) {
+        drawPixel(i * RESOLUTION, j * RESOLUTION, backgroundColor, img);
+      } else {
+        drawPixel(i * RESOLUTION, j * RESOLUTION, getMaterialColor(STATIC_PARTICLES[i][j]), img);
+      }
+    }
   }
-  for (let i = PARTICLES_AMOUNT/2; i >= 0; i--) {
+}
+
+function initParticles() {
+  for (let i = PARTICLES_AMOUNT; i >= 0; i--) {
     DYNAMIC_PARTICLES.push(
-      new Water(floor(windowWidth / 2), PARTICLES_AMOUNT/2 + i)
+      new Sand(floor(width / 2), i)
+    )
+    DYNAMIC_PARTICLES.push(
+      new Water(floor(width / 2), PARTICLES_AMOUNT + i)
     )
   }
 
-  for (let i = 0; i < windowWidth; i++) {
-    STATIC_PARTICLES.push(new Array(windowHeight).fill(null));
+  for (let i = 0; i < width / RESOLUTION; i++) {
+    STATIC_PARTICLES.push(new Array(height / RESOLUTION).fill(null));
+  }
+}
+
+function drawPixel(x: number, y: number, color: p5.Color, img: p5.Image) {
+  for (let i = 0; i < RESOLUTION; i++) {
+    for (let j = 0; j < RESOLUTION; j++) {
+      img.set(x + i, y + j, color);
+    }
   }
 }

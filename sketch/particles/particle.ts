@@ -4,16 +4,20 @@ abstract class Particle {
     material: Materials;
 
     constructor(x: number, y: number, material: Materials) {
-        this.x = x;
-        this.y = y;
+        this.x = floor(x / RESOLUTION);
+        this.y = floor(y / RESOLUTION);
         this.material = material;
     }
 
+    /**
+     * Updates the particle.
+     * @returns {boolean} If the particle needs to be static
+    */
     update(): boolean {
-        return this.y + 1 >= windowHeight;
+        return this.y + 1 >= height;
     }
 
     draw(img: p5.Image) {
-        img.set(this.x, this.y, getMaterialColor(this.material));
+        drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.material), img)
     }
 }

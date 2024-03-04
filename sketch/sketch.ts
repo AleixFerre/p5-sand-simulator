@@ -5,9 +5,19 @@ const PARTICLES_AMOUNT = 200;
 let img: p5.Image;
 let backgroundColor: p5.Color;
 
+let font: p5.Font;
+
+function preload() {
+  font = loadFont('assets/Inconsolata-Medium.ttf');
+}
+
 function setup() {
   console.log("🚀 - Setup initialized - P5 is running");
   createCanvas(windowWidth, windowHeight, WEBGL);
+
+  textFont(font);
+  textSize(32);
+  textAlign(LEFT, TOP);
 
   backgroundColor = color('black');
   img = createImage(width, height);
@@ -24,6 +34,9 @@ function draw() {
   translate(-width / 2, -height / 2);
   updateParticles();
   drawParticles();
+
+  fill('white');
+  text(floor(frameRate()), 5, 5);
 }
 
 function drawStaticParticles() {

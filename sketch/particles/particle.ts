@@ -1,8 +1,7 @@
-class Particle {
+abstract class Particle {
     x: number;
     y: number;
     material: Materials;
-    static direction: boolean = false;
 
     constructor(x: number, y: number, material: Materials) {
         this.x = x;
@@ -10,32 +9,8 @@ class Particle {
         this.material = material;
     }
 
-    /**
-     * Updates the particle.
-     *
-     * @returns {boolean} If the particle needs to be static
-    */
-    update(STATIC_PARTICLES: Materials[][]): boolean {
-        if (this.y >= windowHeight - 1) {
-            return true;
-        }
-
-        if (STATIC_PARTICLES[this.x][this.y+1] !== null) {
-            if (STATIC_PARTICLES[this.x+1][this.y+1] === null) {
-                this.x++;
-                this.y++;
-                return false;
-            }
-            if (STATIC_PARTICLES[this.x-1][this.y+1] === null) {
-                this.x--;
-                this.y++;
-                return false;
-            }
-            return true;
-        }
-
-        this.y++;
-        return false;
+    update(): boolean {
+        return this.y >= windowHeight - 1;
     }
 
     draw(img: p5.Image) {

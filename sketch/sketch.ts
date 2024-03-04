@@ -1,6 +1,6 @@
 let DYNAMIC_PARTICLES: Particle[] = [];
 const STATIC_PARTICLES: Materials[][] = [];
-const PARTICLES_AMOUNT = 500;
+const PARTICLES_AMOUNT = 200;
 
 let img: p5.Image;
 let backgroundColor: p5.Color;
@@ -39,7 +39,7 @@ function drawStaticParticles() {
 function updateParticles() {
   const newDynamicParticles: Particle[] = [];
   for (const particle of DYNAMIC_PARTICLES) {
-    const shouldBeStatic = particle.update(STATIC_PARTICLES);
+    const shouldBeStatic = particle.update();
     if (shouldBeStatic) {
       STATIC_PARTICLES[particle.x][particle.y] = particle.material;
     } else {
@@ -61,9 +61,14 @@ function drawParticles() {
 }
 
 function initParticles() {
-  for (let i = 0; i < PARTICLES_AMOUNT; i++) {
+  for (let i = PARTICLES_AMOUNT/2; i >= 0; i--) {
     DYNAMIC_PARTICLES.push(
-      new Particle(floor(windowWidth/2), PARTICLES_AMOUNT-i, Materials.Water)
+      new Sand(floor(windowWidth / 2), i)
+    )
+  }
+  for (let i = PARTICLES_AMOUNT/2; i >= 0; i--) {
+    DYNAMIC_PARTICLES.push(
+      new Water(floor(windowWidth / 2), PARTICLES_AMOUNT/2 + i)
     )
   }
 

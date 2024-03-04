@@ -10,7 +10,7 @@ abstract class Particle {
     }
 
     update(): boolean {
-        return this.y >= windowHeight - 1;
+        return this.y + 1 >= windowHeight;
     }
 
     draw(img: p5.Image) {

@@ -19,6 +19,8 @@ function windowResized() {
 }
 
 function draw() {
+  if (!mouseIsPressed && DYNAMIC_PARTICLES.length === 0) return;
+
   translate(-width / 2, -height / 2);
   updateParticles();
   drawParticles();
@@ -38,13 +40,24 @@ function drawStaticParticles() {
 
 function updateParticles() {
   const newDynamicParticles: Particle[] = [];
+  const particleToSpawn = mouseIsPressed ? new Sand(mouseX, mouseY) : null;
+  let hasSpawned = false;
+
   for (const particle of DYNAMIC_PARTICLES) {
     const shouldBeStatic = particle.update();
     if (shouldBeStatic) {
       STATIC_PARTICLES[particle.x][particle.y] = particle.material;
     } else {
+      if (particleToSpawn && !hasSpawned && particleToSpawn.y >= particle.y) {
+        newDynamicParticles.push(particleToSpawn);
+        hasSpawned = true;
+      }
       newDynamicParticles.push(particle);
     }
+  }
+
+  if (particleToSpawn && !hasSpawned) {
+    newDynamicParticles.push(particleToSpawn);
   }
 
   DYNAMIC_PARTICLES = newDynamicParticles;

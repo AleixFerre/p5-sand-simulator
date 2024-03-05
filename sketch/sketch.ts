@@ -3,7 +3,7 @@ let ACTIVATED_PARTICLES: Particle[] = [];
 const STATIC_PARTICLES: Materials[][] = [];
 const PARTICLES_AMOUNT = 50;
 
-const DELAY = 5
+const DELAY = 10
 
 let currentMaterial: Materials;
 let delay = 0
@@ -39,8 +39,8 @@ function setup() {
 }
 
 function draw() {
-  if (!mouseIsPressed 
-    && DYNAMIC_PARTICLES.length === 0 
+  if (!mouseIsPressed
+    && DYNAMIC_PARTICLES.length === 0
     && ACTIVATED_PARTICLES.length === 0) return;
 
   translate(-width / 2, -height / 2);
@@ -54,7 +54,7 @@ function draw() {
   textAlign(RIGHT, TOP);
   text(MaterialNames[currentMaterial], width - 5, 5);
 
-  if(delay < DELAY) delay++;
+  if (delay < DELAY) delay++;
 }
 
 function keyPressed() {
@@ -71,26 +71,26 @@ function keyPressed() {
 
 function updateParticles() {
   const newDynamicParticles: Particle[] = [];
-  const newActivatedParticles: Particle[] = [];
-  const particleToSpawn = mouseIsPressed && currentMaterial !== null ? getParticleFromMaterial(mouseX,mouseY,currentMaterial) : null;
+  let newActivatedParticles: Particle[] = [];
+  const particleToSpawn = mouseIsPressed && currentMaterial !== null ? getParticleFromMaterial(mouseX, mouseY, currentMaterial) : null;
 
-  if (particleToSpawn) {4
+  if (particleToSpawn) {
     newDynamicParticles.push(particleToSpawn);
-  }else if (delay == DELAY){
-    if(mouseIsPressed){
+  } else if (delay >= DELAY) {
+    if (mouseIsPressed) {
       delay = 0;
-      const pta = removeParticle(floor(mouseX/RESOLUTION),floor(mouseY/RESOLUTION));
-      if(pta)newActivatedParticles.push(pta);
+      const pta = removeParticle(floor(mouseX / RESOLUTION), floor(mouseY / RESOLUTION));
+      if (pta.length > 0) newActivatedParticles = newActivatedParticles.concat(pta);
     }
   }
 
   for (const particle of DYNAMIC_PARTICLES) {
     const shouldBeStatic = particle.update();
     if (shouldBeStatic) {
-      if(STATIC_PARTICLES[particle.x][particle.y] != null){
+      if (STATIC_PARTICLES[particle.x][particle.y] != null) {
         newDynamicParticles.push(
-          getParticleFromMaterial(particle.x * RESOLUTION,particle.y * RESOLUTION,STATIC_PARTICLES[particle.x][particle.y])
-          );
+          getParticleFromMaterial(particle.x * RESOLUTION, particle.y * RESOLUTION, STATIC_PARTICLES[particle.x][particle.y])
+        );
       }
       STATIC_PARTICLES[particle.x][particle.y] = particle.getMaterial();
     } else {
@@ -99,53 +99,65 @@ function updateParticles() {
   }
 
   for (const particle of ACTIVATED_PARTICLES) {
-    const pta = activateParticleTopRand(particle.x,particle.y);
-    if(pta){
-      newActivatedParticles.push(pta);
-    }
-    const shouldBeStatic = particle.update();
-    
+    const pos_x = particle.x;
+    const pos_y = particle.y;
+    let shouldBeStatic = particle.update();
     if (shouldBeStatic) {
-      if(STATIC_PARTICLES[particle.x][particle.y] != null){
+      if (STATIC_PARTICLES[particle.x][particle.y] != null) {
         newDynamicParticles.push(
-          getParticleFromMaterial(particle.x * RESOLUTION,particle.y * RESOLUTION,STATIC_PARTICLES[particle.x][particle.y])
-          );
+          getParticleFromMaterial(particle.x * RESOLUTION, particle.y * RESOLUTION, STATIC_PARTICLES[particle.x][particle.y])
+        );
       }
       STATIC_PARTICLES[particle.x][particle.y] = particle.getMaterial();
     } else {
+      newActivatedParticles = newActivatedParticles.concat(activateParticleFull(pos_x, pos_y));
       newDynamicParticles.push(particle);
     }
   }
 
-  
+
   ACTIVATED_PARTICLES = newActivatedParticles;
   DYNAMIC_PARTICLES = newDynamicParticles;
 }
 
-function activateParticleTopRand(x:number,y:number):Particle{
-  let posivilitis:[number,number][] = [[1,-1],[0,-1],[-1,-1]];
-
-  let rand:number = floor(Math.random()*posivilitis.length);
-  for(let i:number = 0;i<posivilitis.length;i++){
-    const pos:[number,number] = [x+posivilitis[(i+rand)%posivilitis.length][0],y+posivilitis[(i+rand)%posivilitis.length][1]];
-    const pta = activateParticle(pos[0],pos[1]);
-    if(pta !== null) return pta;
+function activateParticleFull(x: number, y: number): Particle[] {
+  const rand = Math.random() < 0.5 ? -1:1;
+  const posivilitis: [number, number][] = [[0, -1], [1, -1], [-1, -1],[1, 0], [-1, 0]];
+  const partArr : Particle[] = [];
+  for (let i: number = 0; i < posivilitis.length; i++) {
+    const pos: [number, number] = [x + posivilitis[i][0] * rand, y + posivilitis[i][1]];
+    let pta = activateParticle(pos[0], pos[1],-posivilitis[i][0]* rand);
+    if (pta !== null) {
+      partArr.push(pta);
+      return partArr;
+    }
+  }
+  return partArr;
+}
+function activateParticleTopRand(x: number, y: number): Particle {
+  const posivilitis: [number, number][] = [[1, -1], [0, -1], [-1, -1]];
+  const rand: number = floor(Math.random() * posivilitis.length);
+  for (let i: number = 0; i < posivilitis.length; i++) {
+    const pos: [number, number] = [x + posivilitis[(i + rand) % posivilitis.length][0], y + posivilitis[(i + rand) % posivilitis.length][1]];
+    const pta = activateParticle(pos[0], pos[1]);
+    if (pta !== null) return pta;
   }
   return null;
 }
-function activateParticle(x:number,y:number):Particle{
-  const material:Materials = STATIC_PARTICLES[x][y];
-  if(material != null && getMaterial(material).type != MaterialType.Static){
+function activateParticle(x: number, y: number, dir: number = 0): Particle {
+  const material: Materials = STATIC_PARTICLES[x][y];
+  if (material != null && getMaterial(material).type != MaterialType.Static) {
     STATIC_PARTICLES[x][y] = null;
-    return getParticleFromMaterial(x*RESOLUTION,y*RESOLUTION,material);
+    return getParticleFromMaterial(x * RESOLUTION, y * RESOLUTION, material, dir);
   }
   return null;
 }
-function removeParticle(x:number,y:number):Particle{
-  if(STATIC_PARTICLES[x][y] !== null){
+function removeParticle(x: number, y: number): Particle[] {
+  if (STATIC_PARTICLES[x][y] !== null) {
     STATIC_PARTICLES[x][y] = null;
-    return activateParticleTopRand(x,y);
+    return activateParticleFull(x, y);
   }
+  return []
 }
 
 function drawParticles() {
@@ -173,13 +185,13 @@ function drawStaticParticles() {
 function initParticles() {
   for (let i = PARTICLES_AMOUNT; i > 0; i--) {
     DYNAMIC_PARTICLES.push(
-      new Sand(floor(width / 2), (i)*RESOLUTION)
+      new Sand(floor(width / 2), (i) * RESOLUTION)
     );
     DYNAMIC_PARTICLES.push(
-      new Sand(floor(width / 2 + RESOLUTION), (i)*RESOLUTION)
+      new Sand(floor(width / 2 + RESOLUTION), (i) * RESOLUTION)
     );
     DYNAMIC_PARTICLES.push(
-      new Sand(floor(width / 2 - RESOLUTION), (i)*RESOLUTION)
+      new Sand(floor(width / 2 - RESOLUTION), (i) * RESOLUTION)
     );
   }
 
@@ -189,11 +201,11 @@ function initParticles() {
   }
   for (let i = 0; i < width / RESOLUTION; i++) {
     STATIC_PARTICLES[i][0] = Materials.Wall;
-    STATIC_PARTICLES[i][height / RESOLUTION -1] = Materials.Wall
+    STATIC_PARTICLES[i][height / RESOLUTION - 1] = Materials.Wall
   }
   for (let i = 0; i < height / RESOLUTION; i++) {
     STATIC_PARTICLES[0][i] = Materials.Wall;
-    STATIC_PARTICLES[width / RESOLUTION -1][i] = Materials.Wall
+    STATIC_PARTICLES[width / RESOLUTION - 1][i] = Materials.Wall
   }
 }
 

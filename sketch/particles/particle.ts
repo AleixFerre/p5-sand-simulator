@@ -4,10 +4,18 @@ abstract class Particle {
     direction_x: boolean;
     abstract getMaterial():Materials;
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, dir:number = 0) {
         this.x = floor(x / RESOLUTION);
         this.y = floor(y / RESOLUTION);
-        this.direction_x = Math.random() < 0.5;
+        if(dir == 0){
+            this.direction_x = Math.random() < 0.5;
+        } else if(dir > 0 ){
+            this.direction_x = true;
+        } else{
+            this.direction_x = false;
+        }
+        
+        
     }
 
     /**

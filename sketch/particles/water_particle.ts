@@ -23,6 +23,7 @@ class Water extends Particle {
             if (STATIC_PARTICLES[this.x - dir][this.y + 1] === null) {
                 this.x -= dir;
                 this.y++;
+                this.direction = !this.direction;
                 return false;
             }
             const stop = (Math.random() < 0.8)

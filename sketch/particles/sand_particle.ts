@@ -3,9 +3,8 @@ class Sand extends Particle {
         super(x, y, Materials.Sand);
     }
 
-
     override update(): boolean {
-        if(STATIC_PARTICLES[this.x][this.y] !== null){
+        if (STATIC_PARTICLES[this.x][this.y] !== null) {
             this.y--;
             return false;
         }

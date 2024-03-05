@@ -1,9 +1,7 @@
 class Material {
-    density: number;
     color: string;
 
-    constructor(density: number, color: string) {
-        this.density = density;
+    constructor(color: string) {
         this.color = color;
     }
 }
@@ -15,9 +13,24 @@ enum Materials {
 }
 
 const MaterialRef: Record<Materials, Material> = {
-    [Materials.Sand]: new Material(10, 'orange'),
-    [Materials.Water]: new Material(5, 'teal'),
-    [Materials.Wall]: new Material(100, 'gray'),
+    [Materials.Sand]: new Material('orange'),
+    [Materials.Water]: new Material('teal'),
+    [Materials.Wall]: new Material('gray'),
+}
+
+const MaterialNames: Record<Materials, string> = {
+    [Materials.Sand]: 'Sand',
+    [Materials.Water]: 'Water',
+    [Materials.Wall]: 'Wall',
+}
+
+function getParticleFromMaterial(mat: Materials): Particle {
+    const MaterialParticleRef: Record<Materials, Particle> = {
+        [Materials.Sand]: new Sand(mouseX, mouseY),
+        [Materials.Water]: new Water(mouseX, mouseY),
+        [Materials.Wall]: new Sand(mouseX, mouseY)
+    }
+    return MaterialParticleRef[mat];
 }
 
 function getMaterial(material: Materials): Material {

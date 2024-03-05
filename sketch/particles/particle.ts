@@ -21,6 +21,6 @@ abstract class Particle {
     }
 
     draw(img: p5.Image) {
-        drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.material), img)
+        drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.material), img);
     }
 }

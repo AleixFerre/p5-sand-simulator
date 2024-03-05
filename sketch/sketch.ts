@@ -2,8 +2,11 @@ let DYNAMIC_PARTICLES: Particle[] = [];
 const STATIC_PARTICLES: Materials[][] = [];
 const PARTICLES_AMOUNT = 4;
 
+let currentMaterial: Materials;
+
 const RESOLUTION = 10;
 const CANVAS_SIZE = 60;
+const MARGIN = 1;
 
 let img: p5.Image;
 let backgroundColor: p5.Color;
@@ -19,11 +22,12 @@ function setup() {
   console.log("🚀 - Setup initialized - P5 is running");
   createCanvas(CANVAS_SIZE * RESOLUTION, CANVAS_SIZE * RESOLUTION, WEBGL);
 
+  currentMaterial = Materials.Sand;
+
   textFont(font);
   textSize(32);
-  textAlign(LEFT, TOP);
 
-  frameRate(120); 
+  frameRate(120);
 
   backgroundColor = color('black');
   img = createImage(width, height);
@@ -38,12 +42,24 @@ function draw() {
   drawParticles();
 
   fill('white');
+  textAlign(LEFT, TOP);
   text(floor(frameRate()), 5, 5);
+
+  textAlign(RIGHT, TOP);
+  text(MaterialNames[currentMaterial], width - 5, 5);
+}
+
+function keyPressed() {
+  if (keyCode === 49) {
+    currentMaterial = Materials.Sand;
+  } else if (keyCode === 50) {
+    currentMaterial = Materials.Water;
+  }
 }
 
 function updateParticles() {
   const newDynamicParticles: Particle[] = [];
-  const particleToSpawn = mouseIsPressed ? new Water(mouseX, mouseY) : null;
+  const particleToSpawn = mouseIsPressed ? getParticleFromMaterial(currentMaterial) : null;
   let hasSpawned = false;
 
   for (const particle of DYNAMIC_PARTICLES) {
@@ -110,8 +126,8 @@ function initParticles() {
 }
 
 function drawPixel(x: number, y: number, color: p5.Color, img: p5.Image) {
-  for (let i = 0; i < RESOLUTION-1; i++) {
-    for (let j = 0; j < RESOLUTION-1; j++) {
+  for (let i = 0; i < RESOLUTION - MARGIN; i++) {
+    for (let j = 0; j < RESOLUTION - MARGIN; j++) {
       img.set(x + i, y + j, color);
     }
   }

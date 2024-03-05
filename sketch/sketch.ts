@@ -67,10 +67,11 @@ function updateParticles() {
     if (shouldBeStatic) {
       STATIC_PARTICLES[particle.x][particle.y] = particle.material;
     } else {
+      /*
       if (particleToSpawn && !hasSpawned && particleToSpawn.y >= particle.y) {
         newDynamicParticles.push(particleToSpawn);
         hasSpawned = true;
-      }
+      }*/
       newDynamicParticles.push(particle);
     }
   }

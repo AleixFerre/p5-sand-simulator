@@ -6,6 +6,7 @@ class Water extends Particle {
     override update(): boolean {
         if (STATIC_PARTICLES[this.x][this.y] !== null) {
             this.y--;
+            this.direction = !this.direction;2
             return false;
         }
         if (super.update()) {
@@ -13,7 +14,6 @@ class Water extends Particle {
         }
 
         if (STATIC_PARTICLES[this.x][this.y + 1] !== null) {
-            if (Math.random() < 0.003) this.direction = !this.direction;
             const dir = (this.direction) ? 1 : -1;
             if (STATIC_PARTICLES[this.x + dir][this.y + 1] === null) {
                 this.x += dir;
@@ -26,7 +26,7 @@ class Water extends Particle {
                 this.direction = !this.direction;
                 return false;
             }
-            const stop = (Math.random() < 0.8)
+            const stop = (Math.random() < 0.75)
             if (STATIC_PARTICLES[this.x + dir][this.y] === null) {
                 if (!stop) this.x += dir;
                 return false;
@@ -34,6 +34,7 @@ class Water extends Particle {
             else if (STATIC_PARTICLES[this.x - dir][this.y] !== null) {
                 return true;
             }
+            else this.direction = !this.direction;
             return stop;
         }
 

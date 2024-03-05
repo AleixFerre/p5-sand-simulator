@@ -5,7 +5,11 @@ class Sand extends Particle {
         return Sand.material;
     }
     
-    static check:[number,number][] = [[0,1],[1,1],[-1,1]];
+    static check:[number,number][] = [
+        [0,1],
+        [1,1],
+        [-1,1]
+    ];
 
     constructor(x: number, y: number) {
         super(x, y);

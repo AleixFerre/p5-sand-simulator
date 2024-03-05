@@ -33,11 +33,11 @@ const MaterialNames: Record<Materials, string> = {
     [Materials.Wall]: 'Wall',
 }
 
-function getParticleFromMaterial(mat: Materials): Particle {
+function getParticleFromMaterial(x:number,y:number,mat: Materials): Particle {
     const MaterialParticleRef: Record<Materials, Particle> = {
-        [Materials.Sand]: new Sand(mouseX, mouseY),
-        [Materials.Water]: new Water(mouseX, mouseY),
-        [Materials.Wall]: new Sand(mouseX, mouseY)
+        [Materials.Sand]: new Sand(x, y),
+        [Materials.Water]: new Water(x, y),
+        [Materials.Wall]: new Wall(x, y)
     }
     return MaterialParticleRef[mat];
 }

@@ -11,11 +11,13 @@ class Material {
 enum Materials {
     Sand,
     Water,
+    Wall,
 }
 
 const MaterialRef: Record<Materials, Material> = {
-    [Materials.Sand]: new Material(10, 'yellow'),
-    [Materials.Water]: new Material(5, 'blue'),
+    [Materials.Sand]: new Material(10, 'orange'),
+    [Materials.Water]: new Material(5, 'teal'),
+    [Materials.Wall]: new Material(100, 'gray'),
 }
 
 function getMaterial(material: Materials): Material {

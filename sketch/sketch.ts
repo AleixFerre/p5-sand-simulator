@@ -1,9 +1,9 @@
 let DYNAMIC_PARTICLES: Particle[] = [];
 const STATIC_PARTICLES: Materials[][] = [];
-const PARTICLES_AMOUNT = 200;
+const PARTICLES_AMOUNT = 4;
 
-const RESOLUTION = 5;
-const CANVAS_SIZE = 100;
+const RESOLUTION = 10;
+const CANVAS_SIZE = 60;
 
 let img: p5.Image;
 let backgroundColor: p5.Color;
@@ -23,7 +23,7 @@ function setup() {
   textSize(32);
   textAlign(LEFT, TOP);
 
-  frameRate(120);
+  frameRate(120); 
 
   backgroundColor = color('black');
   img = createImage(width, height);
@@ -43,7 +43,7 @@ function draw() {
 
 function updateParticles() {
   const newDynamicParticles: Particle[] = [];
-  const particleToSpawn = mouseIsPressed ? new Sand(mouseX, mouseY) : null;
+  const particleToSpawn = mouseIsPressed ? new Water(mouseX, mouseY) : null;
   let hasSpawned = false;
 
   for (const particle of DYNAMIC_PARTICLES) {
@@ -89,23 +89,29 @@ function drawStaticParticles() {
 }
 
 function initParticles() {
-  for (let i = PARTICLES_AMOUNT; i >= 0; i--) {
+  for (let i = PARTICLES_AMOUNT; i > 0; i--) {
     DYNAMIC_PARTICLES.push(
-      new Sand(floor(width / 2), i)
-    )
-    DYNAMIC_PARTICLES.push(
-      new Water(floor(width / 2), PARTICLES_AMOUNT + i)
+      new Sand(floor(width / 2), (i)*RESOLUTION)
     )
   }
 
   for (let i = 0; i < width / RESOLUTION; i++) {
     STATIC_PARTICLES.push(new Array(height / RESOLUTION).fill(null));
+
+  }
+  for (let i = 0; i < width / RESOLUTION; i++) {
+    STATIC_PARTICLES[i][0] = Materials.Wall;
+    STATIC_PARTICLES[i][height / RESOLUTION -1] = Materials.Wall
+  }
+  for (let i = 0; i < height / RESOLUTION; i++) {
+    STATIC_PARTICLES[0][i] = Materials.Wall;
+    STATIC_PARTICLES[width / RESOLUTION -1][i] = Materials.Wall
   }
 }
 
 function drawPixel(x: number, y: number, color: p5.Color, img: p5.Image) {
-  for (let i = 0; i < RESOLUTION; i++) {
-    for (let j = 0; j < RESOLUTION; j++) {
+  for (let i = 0; i < RESOLUTION-1; i++) {
+    for (let j = 0; j < RESOLUTION-1; j++) {
       img.set(x + i, y + j, color);
     }
   }

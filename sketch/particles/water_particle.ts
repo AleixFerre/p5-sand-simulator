@@ -1,44 +1,59 @@
 class Water extends Particle {
+
+    static material = Materials.Water;
+    override getMaterial(): Materials {
+        return Water.material;
+    }
+
+    static check: [number, number, number, number][] = //x,y,flip if full,chance stop
+    [
+        [0, 1, 0, 0], 
+        [1, 1, 1, 0],
+        [1, 1, 0, 0],
+        [1, 0, 0, 0],
+    ]; 
+
     constructor(x: number, y: number) {
-        super(x, y, Materials.Water);
+        super(x, y);
     }
 
     override update(): boolean {
-        if (STATIC_PARTICLES[this.x][this.y] !== null) {
-            this.y--;
-            this.direction = !this.direction;2
-            return false;
-        }
         if (super.update()) {
             return true;
         }
+        let empty = Water.isEmpty(
+            STATIC_PARTICLES[this.x][this.y]
+        )
 
-        if (STATIC_PARTICLES[this.x][this.y + 1] !== null) {
-            const dir = (this.direction) ? 1 : -1;
-            if (STATIC_PARTICLES[this.x + dir][this.y + 1] === null) {
-                this.x += dir;
-                this.y++;
-                return false;
-            }
-            if (STATIC_PARTICLES[this.x - dir][this.y + 1] === null) {
-                this.x -= dir;
-                this.y++;
-                this.direction = !this.direction;
-                return false;
-            }
-            const stop = (Math.random() < 0.75)
-            if (STATIC_PARTICLES[this.x + dir][this.y] === null) {
-                if (!stop) this.x += dir;
-                return false;
-            }
-            else if (STATIC_PARTICLES[this.x - dir][this.y] !== null) {
-                return true;
-            }
-            else this.direction = !this.direction;
-            return stop;
+        if (!empty) {
+            this.y--;
+            this.direction_x != this.direction_x
+            return false;
         }
+        const dir = (this.direction_x) ? 1 : -1;
 
-        this.y++;
+        for (let i = 0; i < Water.check.length; i++) {
+            let empty = Water.isEmpty(
+                STATIC_PARTICLES[this.x + dir * Water.check[i][0]][this.y + Water.check[i][1]]
+            )
+            if (empty) {
+                this.x += dir * Water.check[i][0];
+                this.y += Water.check[i][1];
+                return false;
+            }
+            else {
+                if (Water.check[i][2] == 1) {
+                    this.direction_x != this.direction_x
+                }
+                if (Water.check[i][3] != 0 && Math.random() < Water.check[i][3]) {
+                    return true;
+                }
+            }
+        }
+        return true;
+    }
+    static isEmpty(material: Materials): boolean {
+        if (material === null) return true;
         return false;
     }
 }

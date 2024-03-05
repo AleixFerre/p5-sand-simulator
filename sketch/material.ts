@@ -1,8 +1,12 @@
 class Material {
     color: string;
+    density: number;
+    type: MaterialType;
 
-    constructor(color: string) {
+    constructor(color: string,type: MaterialType = MaterialType.Solid, density: number = 1 ) {
         this.color = color;
+        this.density = density;
+        this.type = type;
     }
 }
 
@@ -11,11 +15,16 @@ enum Materials {
     Water,
     Wall,
 }
+enum MaterialType {
+    Solid,
+    Liquid,
+    Static,
+}
 
 const MaterialRef: Record<Materials, Material> = {
-    [Materials.Sand]: new Material('orange'),
-    [Materials.Water]: new Material('teal'),
-    [Materials.Wall]: new Material('gray'),
+    [Materials.Sand]: new Material('orange',MaterialType.Solid,10),
+    [Materials.Water]: new Material('teal',MaterialType.Liquid,1),
+    [Materials.Wall]: new Material('gray',MaterialType.Static,100),
 }
 
 const MaterialNames: Record<Materials, string> = {

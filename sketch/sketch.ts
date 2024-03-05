@@ -65,7 +65,10 @@ function updateParticles() {
   for (const particle of DYNAMIC_PARTICLES) {
     const shouldBeStatic = particle.update();
     if (shouldBeStatic) {
-      STATIC_PARTICLES[particle.x][particle.y] = particle.material;
+      if(STATIC_PARTICLES[particle.x][particle.y] != null){
+        newDynamicParticles.push(new Water(particle.x*RESOLUTION,particle.y*RESOLUTION));
+      }
+      STATIC_PARTICLES[particle.x][particle.y] = particle.getMaterial();
     } else {
       /*
       if (particleToSpawn && !hasSpawned && particleToSpawn.y >= particle.y) {

@@ -1,26 +1,28 @@
 abstract class Particle {
     x: number;
     y: number;
-    material: Materials;
-    direction: boolean;
+    direction_x: boolean;
+    abstract getMaterial():Materials;
 
-    constructor(x: number, y: number, material: Materials) {
+    constructor(x: number, y: number) {
         this.x = floor(x / RESOLUTION);
         this.y = floor(y / RESOLUTION);
-        this.material = material;
-        this.direction = Math.random() < 0.5;
+        this.direction_x = Math.random() < 0.5;
     }
 
     /**
      * Updates the particle.
-     * @returns {boolean} If the particle needs to be static
+     * @returns {number} 0 If the particle needs to be static
+     * 1 if it can be procesed more, otherwise its static
+     * 2 if it needs to be dynamic
+     * 3 if it activates a particle
     */
     update(): boolean {
-        return this.y + 1 >= height / RESOLUTION;
-
+        if (this.y + 1 >= height / RESOLUTION) return true;
+        return false;
     }
 
     draw(img: p5.Image) {
-        drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.material), img);
+        drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.getMaterial()), img);
     }
 }

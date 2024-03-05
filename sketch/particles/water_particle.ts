@@ -5,13 +5,14 @@ class Water extends Particle {
         return Water.material;
     }
 
-    static check: [number, number, number, number][] = //x,y,flip if full,chance stop
-    [
-        [0, 1, 0, 0], 
-        [1, 1, 1, 0],
-        [1, 1, 0, 0],
-        [1, 0, 0, 0],
-    ]; 
+    static check: [number, number, number, number][] = //x,y,flip if empty,chance stop
+        [
+            [0, 1, 0, 0],
+            [1, 1, 0, 0],
+            [-1, 1, 1, 0],
+            [1, 0, 0, 0.7],
+            [-1, 0, 1, 1],
+        ];
 
     constructor(x: number, y: number) {
         super(x, y);
@@ -39,15 +40,11 @@ class Water extends Particle {
             if (empty) {
                 this.x += dir * Water.check[i][0];
                 this.y += Water.check[i][1];
+                this.direction_x = Water.check[i][2] == 1 ? !this.direction_x : this.direction_x;
                 return false;
             }
-            else {
-                if (Water.check[i][2] == 1) {
-                    this.direction_x != this.direction_x
-                }
-                if (Water.check[i][3] != 0 && Math.random() < Water.check[i][3]) {
-                    return true;
-                }
+            else if (Water.check[i][3] != 0 && Math.random() < Water.check[i][3]) {
+                return true;
             }
         }
         return true;

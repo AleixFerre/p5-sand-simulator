@@ -30,7 +30,8 @@ abstract class Particle {
         return false;
     }
 
-    draw(img: p5.Image) {
-        drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.getMaterial()), img);
+    draw(img: p5.Image, n:number = 0) {
+        if(n==0)drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, getMaterialColor(this.getMaterial()), img);
+        if(n==1)drawPixel(this.x * RESOLUTION, this.y * RESOLUTION, color('red'), img);
     }
 }

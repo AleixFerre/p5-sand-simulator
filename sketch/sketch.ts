@@ -80,7 +80,7 @@ function updateParticles() {
     if (mouseIsPressed) {
       delay = 0;
       const pta = removeParticle(floor(mouseX / RESOLUTION), floor(mouseY / RESOLUTION));
-      if (pta.length > 0) newActivatedParticles = newActivatedParticles.concat(pta);
+      if (pta.length > 0) ACTIVATED_PARTICLES = ACTIVATED_PARTICLES.concat(pta);
     }
   }
 
@@ -99,6 +99,10 @@ function updateParticles() {
   }
 
   for (const particle of ACTIVATED_PARTICLES) {
+    if(Math.random()<0.3){
+      newActivatedParticles.push(particle);
+      break;
+    }
     const pos_x = particle.x;
     const pos_y = particle.y;
     let shouldBeStatic = particle.update();
@@ -166,6 +170,9 @@ function drawParticles() {
   for (const particle of DYNAMIC_PARTICLES) {
     particle.draw(img);
   }
+  for (const particle of ACTIVATED_PARTICLES) {
+    particle.draw(img,1);
+  }
   img.updatePixels();
   image(img, 0, 0);
 }
@@ -176,7 +183,8 @@ function drawStaticParticles() {
       if (STATIC_PARTICLES[i][j] === null) {
         drawPixel(i * RESOLUTION, j * RESOLUTION, backgroundColor, img);
       } else {
-        drawPixel(i * RESOLUTION, j * RESOLUTION, getMaterialColor(STATIC_PARTICLES[i][j]), img);
+        const c = lerpColor(getMaterialColor(STATIC_PARTICLES[i][j]),color('black'),0.1)
+        drawPixel(i * RESOLUTION, j * RESOLUTION, c, img);
       }
     }
   }
